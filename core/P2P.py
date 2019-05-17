@@ -10,29 +10,28 @@ class P2P:
     def clientConfig(self,host, port):
             self.clientPort = port
             self.clientHost = host
-            print(host, port)
 
     def serverConfig(self, host, port):
             self.serverPort = port
             self.serverHost = host
-            print(host, port)            
+          
         
     def listening(self):
         while True:
+            print(self.serverPort, self.serverHost)
+            print(self.clientPort, self.clientHost)
             ListenerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             ListenerSocket.bind((self.serverHost, self.serverPort))
 
             message, address = ListenerSocket.recvfrom(1024)
-            print(message, address)
             package = json.loads(message.decode('ascii'))
             msg = str(package.get("message"))
            
             data = json.dumps({"message": True})
-
+            print(data)
             if msg:
                 self.msgListen = True
-            else :
-                self.msgListen = False
+
 
             ListenerSocket.sendto(data.encode('ascii'), address)
 
@@ -45,9 +44,6 @@ class P2P:
         
         #RECEBIMENTO DA RESPOSTA
         senderSocket.recv(1024)
-        self.btVotar.setEnabled(False)
-        self.lbAguardando.setText('Aguardando Liberação')
-        self.txtVoto.clear()
-        self.txtVoto.setEnabled(False)
+
 
         

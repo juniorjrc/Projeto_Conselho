@@ -16,12 +16,12 @@ class V(QDialog):
         
         loadUi('ui/V.ui', self)
         self.setWindowTitle('Votante')
-        tread = Thread(target=self.p2p.listening)
-        tread.start()
+        self.tread = Thread(target=self.p2p.listening)
+        self.tread.start()
 
         
-        treadV = Thread(target=self.verify)
-        treadV.start()
+        self.treadV = Thread(target=self.verify)
+        self.treadV.start()
         
         self.btVotar.clicked.connect(self.btVotar_click)
 
@@ -44,6 +44,7 @@ class V(QDialog):
                 self.btVotar.setEnabled(True)
                 self.lbAguardando.setText('Votação Liberada')
                 self.txtVoto.setEnabled(True)
+                self.p2p.msgListen = False                
             
 app=QApplication(sys.argv)
 widget = V()

@@ -35,10 +35,10 @@ class M(QDialog):
             2° para verificar se pode ou não habilitar os botoes
             tem uma variavel no P2P que é responsavel por essa função
         '''
-        tread = Thread(target=self.p2p.listening)
-        tread.start()
-        treadV = Thread(target=self.verify)
-        treadV.start()
+        self.tread = Thread(target=self.p2p.listening)
+        self.tread.start()
+        self.treadV = Thread(target=self.verify)
+        self.treadV.start()
 
 
 
@@ -57,6 +57,7 @@ class M(QDialog):
             if self.p2p.msgListen:
                 self.btLiberar.setEnabled(True)
                 self.lbAguardando.hide()
+                self.p2p.msgListen = False
         
 app=QApplication(sys.argv)
 widget = M()
