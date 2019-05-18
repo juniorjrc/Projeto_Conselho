@@ -2,7 +2,7 @@ import sys
 import socket
 import json
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication,QDialog
+from PyQt5.QtWidgets import QApplication,QDialog, QMessageBox
 from PyQt5.uic import loadUi
 from threading import Thread
 from core.P2P import P2P
@@ -11,8 +11,8 @@ class V(QDialog):
     def __init__(self):
         super(V, self).__init__()
         self.p2p = P2P()
-        self.p2p.clientConfig('192.168.1.102',9001)
-        self.p2p.serverConfig('192.168.1.102',9000)
+        self.p2p.clientConfig('192.168.1.40',9001)
+        self.p2p.serverConfig('192.168.1.40',9000)
         
         loadUi('ui/V.ui', self)
         self.setWindowTitle('Votante')
@@ -31,7 +31,15 @@ class V(QDialog):
             self.txtVoto.setEnabled(True)
             
     def btVotar_click(self):
-        self.p2p.reading()
+        reader = self.p2p.reading()
+
+        while reader is not True:
+            alert = QMessageBox.warning(self, 'Aviso', "A conexão foi perdida, clique em 'Retry' para tentar re-estabelecer! ou em 'Cancel' para fechar o programa", QMessageBox.Retry | QMessageBox.Cancel, QMessageBox.Retry)
+            if alert == QMessageBox.Cancel:
+                sys.exit(QApplication(sys.argv).exec_())
+            else:
+                reader = self.p2p.reading()
+
         self.btVotar.setEnabled(False)
         self.lbAguardando.setText('Aguardando Liberação')
         self.txtVoto.clear()

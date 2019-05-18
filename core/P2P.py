@@ -36,14 +36,19 @@ class P2P:
             ListenerSocket.sendto(data.encode('ascii'), address)
 
     def reading(self):
-        senderSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+                senderSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        #ENVIO DA MENSAGEM
-        data = json.dumps({"message": True})
-        senderSocket.sendto(data.encode('ascii'), (self.clientHost, self.clientPort))
-        
-        #RECEBIMENTO DA RESPOSTA
-        senderSocket.recv(1024)
+                #ENVIO DA MENSAGEM
+                data = json.dumps({"message": True})
+                senderSocket.sendto(data.encode('ascii'), (self.clientHost, self.clientPort))
+                senderSocket.settimeout(4)
+                
+                #RECEBIMENTO DA RESPOSTA
+                senderSocket.recv(1024)
+                return True
+        except socket.timeout:
+                return False
 
 
         

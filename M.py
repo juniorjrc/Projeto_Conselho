@@ -2,7 +2,7 @@ import sys
 import socket
 import json
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication,QDialog
+from PyQt5.QtWidgets import QApplication,QDialog, QMessageBox
 from PyQt5.uic import loadUi
 from threading import Thread
 from core.P2P import P2P
@@ -19,8 +19,8 @@ class M(QDialog):
         '''
         
         self.p2p = P2P()
-        self.p2p.clientConfig('192.168.1.102',9000)
-        self.p2p.serverConfig('192.168.1.102',9001)
+        self.p2p.clientConfig('192.168.1.35',9000)
+        self.p2p.serverConfig('192.168.1.40',9001)
 
 
         '''
@@ -48,7 +48,15 @@ class M(QDialog):
 
             
     def btLiberar_click(self):
-        self.p2p.reading()
+        reader = self.p2p.reading()
+
+        while reader is not True:
+            alert = QMessageBox.warning(self, 'Aviso', "A conexão foi perdida, clique em 'Retry' para tentar re-estabelecer! ou em 'Cancel' para fechar o programa", QMessageBox.Retry | QMessageBox.Cancel, QMessageBox.Retry)
+            if alert == QMessageBox.Cancel:
+                sys.exit(QApplication(sys.argv).exec_())
+            else:
+                reader = self.p2p.reading()
+        
         self.btLiberar.setEnabled(False)
         self.lbAguardando.show()
         
