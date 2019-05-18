@@ -18,8 +18,6 @@ class P2P:
         
     def listening(self):
         while True:
-            print(self.serverPort, self.serverHost)
-            print(self.clientPort, self.clientHost)
             ListenerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             ListenerSocket.bind((self.serverHost, self.serverPort))
 
@@ -28,7 +26,6 @@ class P2P:
             msg = str(package.get("message"))
            
             data = json.dumps({"message": True})
-            print(data)
             if msg:
                 self.msgListen = True
 

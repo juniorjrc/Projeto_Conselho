@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication,QDialog, QMessageBox
 from PyQt5.uic import loadUi
 from threading import Thread
 from core.P2P import P2P
+from core.Logger import Logger
 
 class M(QDialog):
     def __init__(self):
@@ -19,9 +20,8 @@ class M(QDialog):
         '''
         
         self.p2p = P2P()
-        self.p2p.clientConfig('192.168.1.35',9000)
-        self.p2p.serverConfig('192.168.1.40',9001)
-
+        self.p2p.clientConfig('192.168.1.102',9000)
+        self.p2p.serverConfig('192.168.1.102',9001)
 
         '''
             Para boas praticas, a UI está separada em uma pasta
@@ -41,6 +41,13 @@ class M(QDialog):
         self.treadV.start()
 
 
+        '''
+            Classe Logger, já ajusta arquivos
+        '''
+        self.logger = Logger('data/eleitores.txt','data/votos.txt')
+        if self.logger.compare() is not True :
+            #Aparecer mensagem de texto
+            self.logger.repair()
 
         self.lbAguardando.hide()      
         self.btLiberar.clicked.connect(self.btLiberar_click)
@@ -58,6 +65,8 @@ class M(QDialog):
                 reader = self.p2p.reading()
         
         self.btLiberar.setEnabled(False)
+        self.logger.write(self.txtCodigo.text())
+        self.txtCodigo.clear()
         self.lbAguardando.show()
         
     def verify(self):
@@ -66,7 +75,9 @@ class M(QDialog):
                 self.btLiberar.setEnabled(True)
                 self.lbAguardando.hide()
                 self.p2p.msgListen = False
-        
+                if self.logger.compare() is not True :
+                    self.logger.repair()
+                    
 app=QApplication(sys.argv)
 widget = M()
 widget.show()
